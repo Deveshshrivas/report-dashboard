@@ -8,19 +8,36 @@ import MiniCalendar from './MiniCalendar'
 // for what I'm looking at right now". A mini calendar sits below for jumping
 // straight to a date.
 function Sidebar({
+  sources, activeSource, onSourceSelect,
   tiers, activeTier, tierCounts, onTierSelect,
   types, activeType, typeCounts, onTypeSelect,
-  date, onDateChange,
+  date, onDateChange, title = 'Report Dashboard', subtitle = 'Sunny Thailand',
 }) {
   return (
     <aside className="sidebar">
       <div className="sidebar-brand">
         <div className="sidebar-logo">R</div>
         <div className="sidebar-brand-text">
-          <div className="sidebar-title">Report Dashboard</div>
-          <div className="sidebar-subtitle">Sunny Thailand</div>
+          <div className="sidebar-title">{title}</div>
+          <div className="sidebar-subtitle">{subtitle}</div>
         </div>
       </div>
+
+      {sources.length > 0 && <><div className="sidebar-section-label">Report Source</div>
+      <nav className="sidebar-nav">
+        {sources.map(s => (
+          <button
+            key={s.key}
+            type="button"
+            className={`navitem ${s.colorClass}${activeSource === s.key ? ' active' : ''}`}
+            aria-pressed={activeSource === s.key}
+            onClick={() => onSourceSelect(s.key)}
+          >
+            <span className="navitem-dot" />
+            <span className="navitem-label">{s.label}</span>
+          </button>
+        ))}
+      </nav></>}
 
       <div className="sidebar-section-label">Tiers</div>
       <nav className="sidebar-nav">

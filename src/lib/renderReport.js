@@ -1,32 +1,7 @@
-// Phase 2 renderer: turns a stored RAW report_data payload into a full HTML document
-// by (1) normalizing it to the shape the template expects, then (2) injecting it into the
-// static template (public/report-template.html) at the REPORT_DATA_PLACEHOLDER, exactly
-// the way the n8n inject node used to — but at view time, in the browser. This is what
-// lets us store the compact RAW JSON per report instead of the rendered HTML.
-
 import { normalizeReportData } from './normalizeReport'
+import competitorTemplate from '../../../Competitor_Report_redesigned_profiles.html?raw'
+import goldDashboardTemplate from '../../../gold-dashboard-v11.html?raw'
 
-let _templatePromise = null
-
-// Fetch the template once and cache it (the browser also caches the static file).
-function getTemplate() {
-  if (!_templatePromise) {
-    _templatePromise = fetch(`${import.meta.env.BASE_URL}report-template.html`)
-      .then(res => {
-        if (!res.ok) throw new Error(`template fetch failed: ${res.status}`)
-        return res.text()
-      })
-      .catch(err => {
-        // Don't cache a failed fetch — allow a retry on the next open.
-        _templatePromise = null
-        throw err
-      })
-  }
-  return _templatePromise
-}
-
-// reportData may arrive as a parsed object (jsonb column) or a JSON string (text column).
-// Parse to an object so we can normalize it; returns null if it isn't valid JSON.
 function toObject(reportData) {
   if (reportData == null) return null
   if (typeof reportData === 'string') {
@@ -35,7 +10,6 @@ function toObject(reportData) {
   return reportData
 }
 
-// Serialize to a string safe to embed inside a <script> block.
 function toSafeJson(obj) {
   return JSON.stringify(obj)
     .replace(/<\/script>/gi, '<\\/script>')
@@ -47,16 +21,53 @@ function metaTitle(obj) {
   return String(title).replace(/</g, '&lt;').replace(/>/g, '&gt;')
 }
 
-export async function renderReport(reportData) {
+// Inject a selected Supabase report into Competitor_Report_redesigned_profiles.html.
+export async function renderReport(reportData, options = {}) {
   const parsed = toObject(reportData)
   if (!parsed) return ''
-  const template = await getTemplate()
-  // Normalize a COPY so we never mutate the cached hook state.
   const normalized = normalizeReportData(structuredClone(parsed))
-  const safeJson = toSafeJson(normalized)
+  const safeJson = toSafeJson([{ report_data: normalized }])
   const title = metaTitle(normalized)
-  // Function replacers avoid `$`-pattern interpretation in the payload.
-  return template
-    .replace('__REPORT_DATA_JSON__', () => safeJson)
-    .replace('__META_TITLE__', () => title)
+
+  return competitorTemplate
+    .replace(/(<script id="report-data" type="application\/json">)[\s\S]*?(<\/script>)/i,
+      (_match, open, close) => `${open}\n${safeJson}\n${close}`)
+    .replace(/(<script id="report-data-th" type="application\/json">)[\s\S]*?(<\/script>)/i,
+      (_match, open, close) => `${open}\n${safeJson}\n${close}`)
+    .replace(/<title>[\s\S]*?<\/title>/i, `<title>${title}</title>`)
+}
+
+// Configure gold-dashboard-v11.html with its own read-only Supabase project.
+export function renderGoldSentimentDashboard(reportDate, rows = []) {
+  const config = {
+    url: import.meta.env.VITE_GOLD_SENTIMENT_SUPABASE_URL,
+    anonKey: import.meta.env.VITE_GOLD_SENTIMENT_SUPABASE_ANON_KEY,
+    table: import.meta.env.VITE_GOLD_SENTIMENT_TABLE,
+  }
+  const safeDate = /^\d{4}-\d{2}-\d{2}$/.test(reportDate ?? '') ? reportDate : null
+  const embeddedRows = toSafeJson(Array.isArray(rows) ? rows : [])
+
+  let html = goldDashboardTemplate
+    .replace(/window\.SUPABASE_CONFIG\s*=\s*\{[\s\S]*?\};/,
+      `window.SUPABASE_CONFIG = ${toSafeJson(config)};`)
+
+  // The embedded sample is over 1 MB. Replace it by stable boundary markers
+  // instead of a giant regex, which can fail in some browser builds.
+  const rowsStart = html.indexOf('window.EMBEDDED_ROWS = ')
+  // `$` is the first helper after the embedded assignment; keep it and every
+  // helper that follows. Using `let LANG` here would delete those definitions.
+  const rowsEnd = html.indexOf('\n  const $ =', rowsStart)
+  if (rowsStart >= 0 && rowsEnd > rowsStart) {
+    html = html.slice(0, rowsStart)
+      + `window.EMBEDDED_ROWS = ${embeddedRows};`
+      + html.slice(rowsEnd)
+  }
+
+  return html
+    .replace('let LANG="th", allRows=[], selectedDate=null;',
+      `let LANG="th", allRows=[], selectedDate=${JSON.stringify(safeDate)};`)
+    // Embedded rows render immediately. If injection/query ever returns zero,
+    // retain the template's original read-only fetch instead of hanging.
+    .replace(/\n\s*load\(\);\s*\n<\/script>/,
+      '\n  if (!allRows.length) load();\n</script>')
 }

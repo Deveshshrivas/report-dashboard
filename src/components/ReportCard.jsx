@@ -19,6 +19,7 @@ function ReportCard({ report, onClick, style }) {
   // longer fetched for the list, only when a card is opened.
   const hasEng = Boolean(report.has_eng)
   const hasThai = Boolean(report.has_thai)
+  const isGoldSentiment = String(report.id).startsWith('gold-sentiment-')
 
   return (
     <div
@@ -33,9 +34,13 @@ function ReportCard({ report, onClick, style }) {
 
       <div className="card-badges">
         <span className={`badge ${type.cls}`}>{type.label}</span>
-        <span className={`badge ${TIER_CLASS[tier] ?? 'badge-uncategorized'}`}>
-          {tier}
-        </span>
+        {isGoldSentiment ? (
+          <span className="badge badge-tier-2">{report.group_count} groups</span>
+        ) : (
+          <span className={`badge ${TIER_CLASS[tier] ?? 'badge-uncategorized'}`}>
+            {tier}
+          </span>
+        )}
         <span className={`badge ${STATUS_CLASS[report.status] ?? 'badge-status-default'}`}>
           {report.status}
         </span>

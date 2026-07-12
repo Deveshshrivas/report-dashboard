@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { renderReport } from '../lib/renderReport'
+import { renderGoldSentimentDashboard, renderReport } from '../lib/renderReport'
 
 // Appends a small nav script to the raw HTML string without touching the DOM.
 // Does NOT modify any existing element IDs — only assigns IDs to headings that
@@ -76,13 +76,20 @@ function injectNavScript(html) {
     : html + script
 }
 
-function ReportViewer({ report, content, contentLoading, onClose }) {
+function ReportViewer({ report, content, contentLoading, source, onClose }) {
   // Tabs render immediately from the metadata flags; the actual HTML arrives
   // lazily via `content` (fetched only when this report was opened).
-  const hasEng  = Boolean(report?.has_eng)
-  const hasThai = Boolean(report?.has_thai)
+  const hasPrecomputed = Boolean(content?.PRE_computed_Data)
+  const isGoldSentiment = Boolean(content?.goldSentiment)
+  const hasEng  = Boolean(report?.has_eng) || hasPrecomputed
+  const hasThai = Boolean(
+    report?.has_thai || content?.report_data_thai || content?.html_content_thai
+  )
 
   const [tab,         setTab]         = useState(hasEng ? 'eng' : 'thai')
+  // Raw pipeline payloads are language-neutral. Until a language-specific
+  // result exists, expose PRE_computed_Data through the English report view.
+  const activeTab = hasPrecomputed && !report?.has_eng && !hasThai ? 'eng' : tab
   const [headings,    setHeadings]    = useState([])
   const [activeId,    setActiveId]    = useState(null)
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -130,14 +137,24 @@ function ReportViewer({ report, content, contentLoading, onClose }) {
   useEffect(() => {
     if (!content) { setSrcDoc(''); return }
 
-    const data = tab === 'eng' ? content.report_data_eng  : content.report_data_thai
-    const html = tab === 'eng' ? content.html_content_eng : content.html_content_thai
+    if (content.goldSentiment) {
+      setRendering(false)
+      setSrcDoc(injectNavScript(renderGoldSentimentDashboard(
+        report?.report_date, content.rows
+      )))
+      return
+    }
+
+    const data = activeTab === 'eng'
+      ? (content.report_data_eng ?? content.PRE_computed_Data)
+      : content.report_data_thai
+    const html = activeTab === 'eng' ? content.html_content_eng : content.html_content_thai
 
     let cancelled = false
 
     if (data) {
       setRendering(true)
-      renderReport(data)
+      renderReport(data, { source, language: activeTab === 'thai' ? 'thai' : 'eng' })
         .then(full => { if (!cancelled) setSrcDoc(injectNavScript(full)) })
         .catch(() => {
           // Template render failed — fall back to legacy HTML if present.
@@ -150,7 +167,7 @@ function ReportViewer({ report, content, contentLoading, onClose }) {
     }
 
     return () => { cancelled = true }
-  }, [content, tab])
+  }, [content, activeTab, report?.report_date, source])
 
   function handleOverlayClick(e) {
     if (e.target === e.currentTarget) onClose()
@@ -178,11 +195,11 @@ function ReportViewer({ report, content, contentLoading, onClose }) {
 
           <div className="viewer-title">{report?.run_id}</div>
 
-          {(hasEng || hasThai) && (
+          {!isGoldSentiment && (hasEng || hasThai) && (
             <div className="viewer-tabs">
               {hasEng && (
                 <button
-                  className={`viewer-tab ${tab === 'eng' ? 'active' : ''}`}
+                  className={`viewer-tab ${activeTab === 'eng' ? 'active' : ''}`}
                   onClick={() => setTab('eng')}
                 >
                   English
@@ -190,7 +207,7 @@ function ReportViewer({ report, content, contentLoading, onClose }) {
               )}
               {hasThai && (
                 <button
-                  className={`viewer-tab ${tab === 'thai' ? 'active' : ''}`}
+                  className={`viewer-tab ${activeTab === 'thai' ? 'active' : ''}`}
                   onClick={() => setTab('thai')}
                 >
                   Thai
@@ -235,12 +252,12 @@ function ReportViewer({ report, content, contentLoading, onClose }) {
               </div>
             ) : srcDoc ? (
               <iframe
-                key={`${report?.id}-${tab}`}
+                key={`${report?.id}-${activeTab}`}
                 ref={iframeRef}
                 className="viewer-iframe"
                 srcDoc={srcDoc}
                 sandbox="allow-scripts"
-                title={tab === 'eng' ? 'English Report' : 'Thai Report'}
+                title={activeTab === 'eng' ? 'English Report' : 'Thai Report'}
               />
             ) : (
               <div className="viewer-no-content">No content for this language.</div>

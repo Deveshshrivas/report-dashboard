@@ -93,6 +93,12 @@ export function getWeekDates(ymd) {
   return Array.from({ length: 7 }, (_, i) => shiftDate(start, i))
 }
 
+// Last 7 days including the given date (goes back 6 days from the date)
+export function getLast7Days(ymd) {
+  const start = shiftDate(ymd, -6)
+  return Array.from({ length: 7 }, (_, i) => shiftDate(start, i))
+}
+
 // Calendar-month bounds (1st to last day) containing `ymd` — bounds the
 // month-view Supabase query the same way a single date bounds day view.
 export function getMonthRange(ymd) {

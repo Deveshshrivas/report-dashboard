@@ -164,13 +164,119 @@ export function normalizeReportData(reportData, cwaOutput) {
   // ─────────────────────────────────────────────────────
   {
     const c = reportData.charts || {};
+    const dives = safeArr(reportData.deep_dives);
+    const groupBy = (items, keyFn, valueFn) => {
+      const grouped = new Map();
+      items.forEach(item => {
+        const key = String(keyFn(item) || '').trim();
+        if (!key) return;
+        const current = grouped.get(key) || { total: 0, names: [] };
+        current.total += safeNum(valueFn ? valueFn(item) : 1, 1);
+        if (item.name && !current.names.includes(item.name)) current.names.push(item.name);
+        grouped.set(key, current);
+      });
+      return [...grouped].map(([name, value]) => ({ name, ...value, competitors: value.names.length }));
+    };
+
+    // Some pipelines store complete per-competitor deep dives but leave the
+    // aggregate chart arrays empty. Rebuild those arrays from the fetched rows
+    // so the template shows the available database data instead of zero cards.
+    if (!safeArr(c.ad_volume).length) {
+      c.ad_volume = dives
+        .map(d => ({ name: d.name, ads: safeNum(d.total_ads || d.ads) }))
+        .filter(x => x.name && x.ads > 0)
+        .sort((a, b) => b.ads - a.ads);
+    }
     if (!c.ads_hook_distribution && c.hook_distribution) c.ads_hook_distribution = c.hook_distribution;
     if (!c.ads_intent_distribution && c.intent_distribution) c.ads_intent_distribution = c.intent_distribution;
     if (!c.post_volume || !c.post_volume.length) {
-      c.post_volume = (reportData.deep_dives || [])
+      c.post_volume = dives
         .filter(d => safeNum(d.total_posts || d.posts) > 0)
         .map(d => ({ name: d.name, posts: safeNum(d.total_posts || d.posts), confidence: d.post_confidence || 'LOW' }))
         .sort((a, b) => b.posts - a.posts);
+    }
+    if (!safeArr(c.formats_per_competitor).length) {
+      c.formats_per_competitor = dives.map(d => {
+        const f = d.format_distribution || {};
+        return {
+          name: d.name,
+          ads: safeNum(d.total_ads || d.ads),
+          img: safeNum(f.image), vid: safeNum(f.video), car: safeNum(f.carousel),
+        };
+      }).filter(x => x.name);
+    }
+    if (!safeArr(c.format_distribution).length || safeArr(c.format_distribution).every(x => safeNum(x.percentage) === 0)) {
+      const totals = { Image: 0, Video: 0, Carousel: 0 };
+      dives.forEach(d => {
+        const f = d.format_distribution || {};
+        const ads = Math.max(1, safeNum(d.total_ads || d.ads));
+        totals.Image += safeNum(f.image) * ads;
+        totals.Video += safeNum(f.video) * ads;
+        totals.Carousel += safeNum(f.carousel) * ads;
+      });
+      const total = totals.Image + totals.Video + totals.Carousel;
+      if (total > 0) c.format_distribution = Object.entries(totals).map(([format, value]) => ({
+        format, percentage: Math.round(value / total * 100), competitors: dives.length,
+      }));
+    }
+    if (!safeArr(c.hook_distribution).length) {
+      c.hook_distribution = groupBy(
+        dives.filter(d => safeNum(d.total_ads || d.ads) > 0),
+        d => d.paid_snapshot?.dominant_hook,
+        d => safeNum(d.total_ads || d.ads, 1),
+      ).map(x => ({ hook: x.name, total: x.total, competitors: x.competitors, names: x.names }));
+    }
+    if (!safeArr(c.intent_distribution).length) {
+      const paidIntent = d => {
+        const text = `${d.paid_snapshot?.key_tactic || ''} ${d.strategy_en || ''}`.toLowerCase();
+        if (/book|lead|convert|offer|price|discount|promotion|sale/.test(text)) return 'conversion';
+        if (/educat|trust|proof|review|explain|consider/.test(text)) return 'consideration';
+        return 'awareness';
+      };
+      c.intent_distribution = groupBy(
+        dives.filter(d => safeNum(d.total_ads || d.ads) > 0), paidIntent,
+        d => safeNum(d.total_ads || d.ads, 1),
+      ).map(x => ({ intent: x.name, total: x.total, competitors: x.competitors, names: x.names }));
+    }
+    if (!safeArr(c.posts_hook_distribution).length) {
+      c.posts_hook_distribution = groupBy(
+        dives.filter(d => safeNum(d.total_posts || d.posts) > 0),
+        d => d.organic_snapshot?.dominant_hook,
+        () => 1,
+      ).map(x => ({ ...x, weighted_total: x.total }));
+    }
+    if (!safeArr(c.post_categories).length) {
+      c.post_categories = groupBy(
+        dives.filter(d => safeNum(d.total_posts || d.posts) > 0),
+        d => d.organic_snapshot?.top_category,
+        () => 1,
+      ).map(x => ({ ...x, weighted_total: x.total }));
+    }
+    if (!safeArr(c.post_formats).length) {
+      c.post_formats = groupBy(
+        dives.filter(d => safeNum(d.total_posts || d.posts) > 0),
+        d => d.organic_snapshot?.top_format,
+        () => 1,
+      ).map(x => ({ ...x, weighted_total: x.total }));
+    }
+    if (!safeArr(c.posts_intent_distribution).length) {
+      const organicIntent = d => {
+        const text = `${d.organic_snapshot?.top_category || ''} ${d.key_observation || ''}`.toLowerCase();
+        if (/promo|discount|offer|price|sale/.test(text)) return 'Promotion';
+        if (/review|question|community|engage|contest/.test(text)) return 'Engagement';
+        return 'Awareness';
+      };
+      c.posts_intent_distribution = groupBy(
+        dives.filter(d => safeNum(d.total_posts || d.posts) > 0), organicIntent, () => 1,
+      ).map(x => ({ ...x, weighted_total: x.total }));
+    }
+    if (!safeArr(c.service_landscape).length) {
+      const services = [];
+      dives.forEach(d => safeArr(d.business_positioning?.services).forEach(service => {
+        services.push({ name: d.name, service });
+      }));
+      c.service_landscape = groupBy(services, x => x.service, () => 1)
+        .map(x => ({ name: x.name, service: x.name, count: x.total, mentions: x.total, competitors: x.competitors, names: x.names }));
     }
     reportData.charts = c;
   }
