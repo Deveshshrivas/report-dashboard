@@ -1872,3 +1872,117 @@ body::before {
     padding: 16px;
   }
 }
+
+/* Mobile report filters drawer */
+.mobile-filter-toggle,
+.app-sidebar-backdrop {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-filter-toggle {
+    display: inline-flex;
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface-2);
+    color: var(--text);
+    cursor: pointer;
+  }
+
+  .mobile-filter-toggle span {
+    width: 17px;
+    height: 2px;
+    border-radius: 2px;
+    background: currentColor;
+  }
+
+  .app-sidebar-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    border: 0;
+    background: rgba(2, 6, 23, 0.68);
+    backdrop-filter: blur(2px);
+  }
+
+  .sidebar {
+    position: fixed !important;
+    inset: 0 auto 0 0 !important;
+    width: min(86vw, 320px) !important;
+    height: 100dvh !important;
+    z-index: 100 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0 !important;
+    padding: 18px 14px 24px !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    transform: translateX(-105%) !important;
+    transition: transform 0.25s var(--ease) !important;
+    box-shadow: 12px 0 36px rgba(0, 0, 0, 0.38) !important;
+  }
+
+  .sidebar.open {
+    transform: translateX(0) !important;
+  }
+
+  .sidebar-brand {
+    padding: 4px 6px 20px !important;
+  }
+
+  .sidebar-subtitle,
+  .sidebar-section-label {
+    display: block !important;
+  }
+
+  .sidebar-nav {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+    overflow: visible !important;
+  }
+
+  .sidebar-nav + .sidebar-nav {
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+    border-left: 0 !important;
+  }
+
+  .navitem {
+    width: 100% !important;
+    flex-shrink: 0 !important;
+    padding: 10px !important;
+  }
+
+  .sidebar-spacer {
+    display: block !important;
+    min-height: 16px;
+  }
+
+  .minical {
+    display: block !important;
+    flex: 0 0 auto;
+  }
+
+  .mobile-date-jump {
+    display: none !important;
+  }
+
+  .dashboard-topbar {
+    grid-template-columns: auto minmax(0, 1fr) !important;
+    align-items: start !important;
+  }
+
+  .dashboard-topbar .topbar-actions {
+    grid-column: 1 / -1;
+  }
+}

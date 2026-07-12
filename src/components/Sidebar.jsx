@@ -12,9 +12,10 @@ function Sidebar({
   tiers, activeTier, tierCounts, onTierSelect,
   types, activeType, typeCounts, onTypeSelect,
   date, onDateChange, title = 'Report Dashboard', subtitle = 'Sunny Thailand',
+  isOpen = false, onClose = () => {},
 }) {
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar${isOpen ? ' open' : ''}`}>
       <div className="sidebar-brand">
         <div className="sidebar-logo">R</div>
         <div className="sidebar-brand-text">
@@ -31,7 +32,7 @@ function Sidebar({
             type="button"
             className={`navitem ${s.colorClass}${activeSource === s.key ? ' active' : ''}`}
             aria-pressed={activeSource === s.key}
-            onClick={() => onSourceSelect(s.key)}
+            onClick={() => { onSourceSelect(s.key); onClose() }}
           >
             <span className="navitem-dot" />
             <span className="navitem-label">{s.label}</span>
@@ -47,7 +48,7 @@ function Sidebar({
             type="button"
             className={`navitem ${t.colorClass}${activeTier === t.key ? ' active' : ''}`}
             aria-pressed={activeTier === t.key}
-            onClick={() => onTierSelect(t.key)}
+            onClick={() => { onTierSelect(t.key); onClose() }}
           >
             <span className="navitem-dot" />
             <span className="navitem-label">{t.label}</span>
@@ -64,7 +65,7 @@ function Sidebar({
             type="button"
             className={`navitem ${t.colorClass}${activeType === t.key ? ' active' : ''}`}
             aria-pressed={activeType === t.key}
-            onClick={() => onTypeSelect(t.key)}
+            onClick={() => { onTypeSelect(t.key); onClose() }}
           >
             <span className="navitem-dot" />
             <span className="navitem-label">{t.label}</span>
@@ -76,7 +77,7 @@ function Sidebar({
       <div className="sidebar-spacer" />
 
       <div className="sidebar-section-label">Jump to Date</div>
-      <MiniCalendar date={date} onDateChange={onDateChange} />
+      <MiniCalendar date={date} onDateChange={(nextDate) => { onDateChange(nextDate); onClose() }} />
     </aside>
   )
 }

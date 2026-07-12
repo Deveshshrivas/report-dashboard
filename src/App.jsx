@@ -95,6 +95,7 @@ function Dashboard({ portal, onBack, onLogout, standalone = false }) {
   const [view, setView] = useState('day')
   const [tier, setTier] = useState('')
   const [reportType, setReportType] = useState('')
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
   const [selectedId, setSelectedId] = useState(null)
   const [rangeStartDate, setRangeStartDate] = useState(null)
   const [rangeEndDate, setRangeEndDate] = useState(null)
@@ -180,9 +181,13 @@ function Dashboard({ portal, onBack, onLogout, standalone = false }) {
         onDateChange={jumpToDate}
         title={portal.title}
         subtitle={`${portal.short} reports`}
+        isOpen={mobileFiltersOpen}
+        onClose={() => setMobileFiltersOpen(false)}
       />
+      {mobileFiltersOpen && <button type="button" className="app-sidebar-backdrop" aria-label="Close filters" onClick={() => setMobileFiltersOpen(false)} />}
       <div className="main-col">
         <header className="topbar dashboard-topbar">
+          <button type="button" className="mobile-filter-toggle" aria-label="Open report filters" aria-expanded={mobileFiltersOpen} onClick={() => setMobileFiltersOpen(true)}><span /><span /><span /></button>
           <div className="topbar-left"><span className="dashboard-name">{portal.title}</span><h1 className="topbar-title">{formatRangeLabel(date, view)}</h1><span className="topbar-sub">{filtered.length} report{filtered.length !== 1 ? 's' : ''}</span></div>
           <div className="topbar-actions">
             <div className="typetoggle">{VIEWS.map(item => <button key={item.key} type="button" className={view === item.key ? 'active' : ''} onClick={() => setView(item.key)}>{item.label}</button>)}</div>
