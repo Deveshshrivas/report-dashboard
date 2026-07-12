@@ -1,6 +1,6 @@
 import { normalizeReportData } from './normalizeReport'
-import competitorTemplate from '../../../Competitor_Report_redesigned_profiles.html?raw'
-import goldDashboardTemplate from '../../../gold-dashboard-v11.html?raw'
+import competitorTemplate from '../../Competitor_Report_redesigned_profiles.html?raw'
+import goldDashboardTemplate from '../../gold-dashboard-v11.html?raw'
 
 function toObject(reportData) {
   if (reportData == null) return null
