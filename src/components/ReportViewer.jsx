@@ -81,15 +81,17 @@ function ReportViewer({ report, content, contentLoading, source, onClose }) {
   // lazily via `content` (fetched only when this report was opened).
   const hasPrecomputed = Boolean(content?.PRE_computed_Data)
   const isGoldSentiment = Boolean(content?.goldSentiment)
-  const hasEng  = Boolean(report?.has_eng) || hasPrecomputed
+  // The competitor template ships its own Thai translation, so a raw
+  // PRE_computed_Data payload can always be viewed in Thai chrome even when
+  // the pipeline wrote no Thai-specific columns.
   const hasThai = Boolean(
     report?.has_thai || content?.report_data_thai || content?.html_content_thai
-  )
+  ) || hasPrecomputed
 
-  const [tab,         setTab]         = useState(hasEng ? 'eng' : 'thai')
-  // Raw pipeline payloads are language-neutral. Until a language-specific
-  // result exists, expose PRE_computed_Data through the English report view.
-  const activeTab = hasPrecomputed && !report?.has_eng && !hasThai ? 'eng' : tab
+  // No English tab in this dashboard: open in Thai whenever a Thai version
+  // exists; English renders only for English-only reports (no tabs shown).
+  const [tab, setTab] = useState(report?.has_thai ? 'thai' : 'eng')
+  const activeTab = tab
   const [headings,    setHeadings]    = useState([])
   const [activeId,    setActiveId]    = useState(null)
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -99,7 +101,7 @@ function ReportViewer({ report, content, contentLoading, source, onClose }) {
 
   // Reset when a new report is opened
   useEffect(() => {
-    setTab(report?.has_eng ? 'eng' : 'thai')
+    setTab(report?.has_thai ? 'thai' : 'eng')
     setHeadings([])
     setActiveId(null)
     setSidebarOpen(false)
@@ -145,9 +147,13 @@ function ReportViewer({ report, content, contentLoading, source, onClose }) {
       return
     }
 
+    // Thai priority: real translated data, then a stored Thai HTML blob (data
+    // stays null so the html branch below runs), then the language-neutral
+    // pipeline payload rendered with the template's built-in Thai chrome.
     const data = activeTab === 'eng'
       ? (content.report_data_eng ?? content.PRE_computed_Data)
-      : content.report_data_thai
+      : (content.report_data_thai
+          ?? (content.html_content_thai ? null : content.PRE_computed_Data))
     const html = activeTab === 'eng' ? content.html_content_eng : content.html_content_thai
 
     let cancelled = false
@@ -195,24 +201,14 @@ function ReportViewer({ report, content, contentLoading, source, onClose }) {
 
           <div className="viewer-title">{report?.run_id}</div>
 
-          {!isGoldSentiment && (hasEng || hasThai) && (
+          {!isGoldSentiment && hasThai && (
             <div className="viewer-tabs">
-              {hasEng && (
-                <button
-                  className={`viewer-tab ${activeTab === 'eng' ? 'active' : ''}`}
-                  onClick={() => setTab('eng')}
-                >
-                  English
-                </button>
-              )}
-              {hasThai && (
-                <button
-                  className={`viewer-tab ${activeTab === 'thai' ? 'active' : ''}`}
-                  onClick={() => setTab('thai')}
-                >
-                  Thai
-                </button>
-              )}
+              <button
+                className={`viewer-tab ${activeTab === 'thai' ? 'active' : ''}`}
+                onClick={() => setTab('thai')}
+              >
+                Thai
+              </button>
             </div>
           )}
 

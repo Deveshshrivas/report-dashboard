@@ -252,29 +252,58 @@ body::before {
   transition: background 0.16s var(--ease), color 0.16s var(--ease);
 }
 
-.navitem.col-all     .navitem-dot { background: var(--accent); }
-.navitem.col-tier1   .navitem-dot { background: var(--tier1); }
-.navitem.col-tier2   .navitem-dot { background: var(--tier2); }
-.navitem.col-tier3   .navitem-dot { background: var(--tier3); }
-.navitem.col-daily   .navitem-dot { background: var(--daily); }
-.navitem.col-weekly  .navitem-dot { background: var(--weekly); }
-.navitem.col-monthly .navitem-dot { background: var(--monthly); }
-.navitem.col-main    .navitem-dot { background: var(--main); }
-
 .navitem.active {
   background: rgba(255,255,255,0.1);
 }
 .navitem.active .navitem-label { color: #ffffff; }
 .navitem.active .navitem-count { background: rgba(255,255,255,0.16); color: #fff; }
 
-.navitem.col-all.active   .navitem-dot { box-shadow: 0 0 0 4px rgba(45, 212, 191, 0.3); }
-.navitem.col-tier1.active .navitem-dot { box-shadow: 0 0 0 4px rgba(29, 78, 216, 0.28); }
-.navitem.col-tier2.active .navitem-dot { box-shadow: 0 0 0 4px rgba(14, 107, 99, 0.28); }
-.navitem.col-tier3.active .navitem-dot { box-shadow: 0 0 0 4px rgba(109, 40, 217, 0.28); }
-.navitem.col-daily.active   .navitem-dot { box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.28); }
-.navitem.col-weekly.active  .navitem-dot { box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.28); }
-.navitem.col-monthly.active .navitem-dot { box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.28); }
-.navitem.col-main.active    .navitem-dot { box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.28); }
+/* Tier 3 gets a tactile, raised treatment when selected. */
+.navitem.col-tier3.active {
+  border: 1px solid rgba(216,180,254,0.42);
+  background: linear-gradient(145deg, #7c3aed 0%, #6d28d9 46%, #4c1d95 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.3),
+    inset 0 -2px 5px rgba(46,16,101,0.48),
+    0 5px 0 #35106f,
+    0 10px 18px rgba(30,12,67,0.42);
+  transform: translateY(-3px);
+}
+
+.navitem.col-tier3.active:hover {
+  background: linear-gradient(145deg, #8b5cf6 0%, #7c3aed 48%, #5b21b6 100%);
+  transform: translateY(-4px);
+}
+
+.navitem.col-tier3.active:active {
+  box-shadow:
+    inset 0 2px 6px rgba(46,16,101,0.52),
+    0 2px 0 #35106f,
+    0 5px 10px rgba(30,12,67,0.34);
+  transform: translateY(0);
+}
+
+.navitem.col-tier3.active .navitem-label {
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(30,12,67,0.7);
+}
+
+.navitem.col-tier3.active .navitem-count {
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: linear-gradient(145deg, rgba(255,255,255,0.24), rgba(46,16,101,0.28));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.22),
+    0 2px 4px rgba(30,12,67,0.32);
+}
+
+/* Active dot ring takes the button's own --nav-color automatically. */
+.navitem.active .navitem-dot {
+  box-shadow:
+    inset 1px 1px 2px rgba(255,255,255,0.5),
+    inset -1px -2px 2px rgba(0,0,0,0.42),
+    0 0 0 4px color-mix(in srgb, var(--nav-color) 30%, transparent);
+}
 
 /* Two nav lists (Tiers, then Report Type) sit back to back — give the second
    section label a touch more breathing room above it. */
@@ -1533,6 +1562,64 @@ body::before {
   }
 }
 
+/* Lighter translucent environment; the solid 3D blocks stay high-contrast. */
+body {
+  background:
+    radial-gradient(circle at 12% 12%, rgba(45,212,191,0.16), transparent 34%),
+    radial-gradient(circle at 88% 78%, rgba(56,189,248,0.16), transparent 38%),
+    linear-gradient(145deg, #132b42 0%, #102238 48%, #0b1c30 100%);
+}
+
+.main-col {
+  background:
+    radial-gradient(ellipse at 18% 5%, rgba(45,212,191,0.12) 0%, transparent 38%),
+    radial-gradient(ellipse at 86% 70%, rgba(56,189,248,0.12) 0%, transparent 42%),
+    linear-gradient(145deg, rgba(28,52,76,0.76), rgba(13,31,51,0.72));
+  box-shadow:
+    inset 10px 0 24px rgba(2,12,25,0.24),
+    inset 0 14px 28px rgba(2,12,25,0.2),
+    inset 0 -18px 38px rgba(0,0,0,0.2);
+}
+
+.board-wrap {
+  background-color: rgba(14,35,55,0.58);
+  background-image:
+    linear-gradient(rgba(123,169,207,0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(123,169,207,0.12) 1px, transparent 1px),
+    radial-gradient(ellipse at 95% 42%, rgba(45,212,191,0.11) 0%, transparent 40%),
+    radial-gradient(ellipse at 44% -8%, rgba(96,165,250,0.13) 0%, transparent 48%),
+    linear-gradient(155deg, rgba(23,48,72,0.68), rgba(8,24,41,0.72));
+  box-shadow:
+    inset 0 18px 30px rgba(2,12,25,0.22),
+    inset 14px 0 30px rgba(2,12,25,0.18),
+    inset -16px 0 32px rgba(2,12,25,0.2),
+    inset 0 -24px 38px rgba(0,0,0,0.18);
+}
+
+.dashboard-topbar {
+  background: linear-gradient(145deg, rgba(35,60,88,0.78), rgba(17,37,61,0.74));
+  backdrop-filter: blur(14px) saturate(120%);
+  border-color: rgba(111,158,197,0.34);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    inset 0 -6px 14px rgba(2,12,25,0.12),
+    0 10px 20px rgba(0,0,0,0.22);
+}
+
+.controlbar {
+  background: linear-gradient(145deg, rgba(36,56,82,0.76), rgba(17,35,57,0.72));
+  backdrop-filter: blur(12px) saturate(115%);
+  border-color: rgba(104,145,181,0.38);
+}
+
+.cal-single,
+.cal-week,
+.cal-month {
+  background: linear-gradient(155deg, rgba(20,36,57,0.76), rgba(8,21,37,0.78));
+  backdrop-filter: blur(10px);
+  border-color: rgba(76,112,148,0.34);
+}
+
 /* ═══════════════════════════════════════
    RESPONSIVE — SMALL PHONES  (≤ 400 px)
 ═══════════════════════════════════════ */
@@ -1985,4 +2072,1038 @@ body::before {
   .dashboard-topbar .topbar-actions {
     grid-column: 1 / -1;
   }
+}
+
+/* ═══════════════════════════════════════
+   3D CHROME — one static system.
+   Depth is painted with layered shadows; the only motion is a small,
+   cheap translate on hover/press. No perspective transforms, no idle
+   animations, no backdrop blur on opaque surfaces.
+═══════════════════════════════════════ */
+.controlbar,
+.cal-single,
+.cal-week,
+.cal-month,
+.minical {
+  backdrop-filter: none;
+  border-top-color: rgba(255,255,255,0.13);
+  box-shadow:
+    0 3px 0 #293b5d,
+    0 6px 0 #1d2b49,
+    0 11px 18px rgba(0,0,0,0.42),
+    inset 0 1px 0 rgba(255,255,255,0.07);
+}
+
+.datenav,
+.typetoggle {
+  backdrop-filter: none;
+  box-shadow:
+    0 2px 0 #263858,
+    0 5px 10px rgba(0,0,0,0.34),
+    inset 0 1px 0 rgba(255,255,255,0.08);
+}
+
+.datenav-today,
+.typetoggle button.active,
+.dashboard-signout,
+.dashboard-back {
+  box-shadow:
+    0 3px 0 color-mix(in srgb, var(--accent) 32%, #08101e),
+    0 6px 10px rgba(0,0,0,0.3),
+    inset 0 1px 0 rgba(255,255,255,0.12);
+  transition: transform 0.16s var(--ease), box-shadow 0.16s var(--ease);
+}
+
+.datenav-today:active,
+.typetoggle button.active:active,
+.dashboard-signout:active,
+.dashboard-back:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 0 #14233d, 0 3px 6px rgba(0,0,0,0.3);
+}
+
+/* Calendar event blocks: solid colored buttons with a painted base. */
+.evblock.cal-type-daily   { --face: var(--daily); }
+.evblock.cal-type-weekly  { --face: var(--weekly); }
+.evblock.cal-type-monthly { --face: var(--monthly); }
+.evblock.cal-type-main    { --face: var(--main); }
+
+.evblock {
+  border-top: 1px solid rgba(255,255,255,0.25);
+  transition: transform 0.16s var(--ease), box-shadow 0.16s var(--ease);
+  box-shadow:
+    0 2px 0 color-mix(in srgb, var(--face, var(--daily)) 78%, #000),
+    0 4px 0 color-mix(in srgb, var(--face, var(--daily)) 62%, #000),
+    0 7px 9px rgba(0,0,0,0.45);
+}
+
+.evblock:hover {
+  transform: translateY(-2px) !important;
+  box-shadow:
+    0 3px 0 color-mix(in srgb, var(--face, var(--daily)) 78%, #000),
+    0 6px 0 color-mix(in srgb, var(--face, var(--daily)) 58%, #000),
+    0 12px 16px rgba(0,0,0,0.5);
+}
+
+.evblock:active {
+  transform: translateY(1px) !important;
+  box-shadow:
+    0 2px 0 color-mix(in srgb, var(--face, var(--daily)) 55%, #000),
+    0 4px 8px rgba(0,0,0,0.4);
+}
+
+/* Chunky static extrusion. The block's "thickness" is a stack of solid
+   box-shadows stepping down-right (light from the top-left). Shadows follow
+   the border-radius, so the sides always hug the rounded corners — no painted
+   pseudo-element faces, no corner gaps. */
+.stat-row {
+  gap: 24px;
+  margin-bottom: 36px;
+}
+
+.stat-tile,
+.card {
+  --block-face: #203452;
+  /* Side walls are shaded versions of the face, so every block stays
+     consistent when only --block-face changes. */
+  --block-edge: color-mix(in srgb, var(--block-face) 68%, #010714);
+  --block-side: color-mix(in srgb, var(--block-face) 40%, #010714);
+  isolation: isolate;
+  position: relative;
+  overflow: visible;
+  z-index: 1;
+  backdrop-filter: none;
+  border: 1px solid color-mix(in srgb, var(--block-face) 66%, #d9ecfa);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0) 42%),
+    linear-gradient(160deg,
+      color-mix(in srgb, var(--block-face) 84%, #ffffff) 0%,
+      var(--block-face) 55%,
+      color-mix(in srgb, var(--block-face) 82%, #020817) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.22),
+    inset 0 -6px 14px rgba(1,7,20,0.18),
+    0 16px 26px rgba(0,0,0,0.42);
+}
+
+/* Beveled slab faces: a right face and a bottom face painted behind the
+   block. Both start past the 12–16px corner radius so they never poke out
+   from behind a rounded corner, and both shade from the shared derived
+   --block-edge / --block-side, so they can never clash with the face. */
+.stat-tile::before,
+.card::before {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  z-index: -2;
+  top: 14px;
+  right: -18px;
+  bottom: -16px;
+  width: 18px;
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--block-edge) 90%, #ffffff),
+    var(--block-side));
+  clip-path: polygon(0 0, 100% 11px, 100% 100%, 0 calc(100% - 16px));
+  filter: drop-shadow(3px 4px 5px rgba(0,0,0,0.26));
+  transition: all 0.2s var(--ease);
+}
+
+.stat-tile::after,
+.card::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  z-index: -1;
+  left: 14px;
+  right: -18px;
+  bottom: -18px;
+  height: 18px;
+  background: linear-gradient(180deg,
+    var(--block-edge),
+    color-mix(in srgb, var(--block-side) 80%, #000000));
+  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 100%, 14px 100%);
+  filter: drop-shadow(0 6px 6px rgba(0,0,0,0.3));
+  transition: all 0.2s var(--ease);
+}
+
+/* The tiles are fully colored now — the old accent strip just pokes over the
+   rounded corner, so drop it. */
+.stat-tile-accent { display: none; }
+
+/* Validated status faces (info / good / warning): distinct under CVD and
+   >= 5.2:1 beneath white text. Walls derive from the face automatically. */
+.stat-tile:nth-child(1) { --block-face: #356abd; }
+.stat-tile:nth-child(2) { --block-face: #1d8362; }
+.stat-tile:nth-child(3) { --block-face: #9c6812; }
+
+.stat-tile .stat-tile-v { color: #f4f9ff; }
+.stat-tile .stat-tile-k { color: rgba(233,242,250,0.82); }
+
+.cal-daylist {
+  gap: 26px;
+  padding-right: 20px;
+  padding-bottom: 22px;
+}
+
+/* Report-type identity: a tinted face plus a validated border hue
+   (blue / violet / amber / teal — CVD-separated, >= 3:1 on the board).
+   Type is also written in the card's badge, so color is never alone. */
+.card.card-top-daily {
+  --block-face: #24406f;
+  border-color: #6191e6;
+}
+
+.card.card-top-weekly {
+  --block-face: #3e2f70;
+  border-color: #7a4fc9;
+}
+
+.card.card-top-monthly {
+  --block-face: #5b4522;
+  border-color: #b5812c;
+}
+
+.card.card-top-main {
+  --block-face: #1d574a;
+  border-color: #2c9a77;
+}
+
+.controlbar,
+.cal-single,
+.cal-week,
+.cal-month {
+  border-width: 1px;
+  border-color: #344862;
+  background: linear-gradient(145deg, rgba(28,43,67,0.98), rgba(14,25,43,0.98));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.07),
+    0 3px 0 #283b56,
+    0 6px 0 #1a2a42,
+    0 11px 18px rgba(0,0,0,0.3);
+}
+
+@media (max-width: 768px) {
+  .stat-row {
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  /* Shallower slab faces on small screens. */
+  .stat-tile::before,
+  .card::before {
+    top: 12px;
+    right: -10px;
+    bottom: -10px;
+    width: 10px;
+    clip-path: polygon(0 0, 100% 7px, 100% 100%, 0 calc(100% - 10px));
+  }
+
+  .stat-tile::after,
+  .card::after {
+    left: 12px;
+    right: -10px;
+    bottom: -11px;
+    height: 11px;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 100%, 10px 100%);
+  }
+
+  .cal-daylist {
+    padding-right: 8px;
+  }
+}
+
+/* Intentional interaction only: static blocks lift when directly hovered. */
+@media (hover: hover) and (pointer: fine) {
+  .stat-tile,
+  .card {
+    transition:
+      transform 0.2s var(--ease),
+      box-shadow 0.2s var(--ease),
+      border-color 0.2s var(--ease);
+  }
+
+  /* Lift up-left; the shadow stack grows so the block reads as rising off
+     the surface while staying attached to its side walls. */
+  /* Rigid 3D lift: the WHOLE block — face and walls together, like one solid
+     object — rises off the board. The floor shadow stays low and spreads,
+     showing the air gap underneath. */
+  .stat-tile:hover,
+  .card:hover {
+    z-index: 6; /* raised block paints above neighboring blocks and their walls */
+    transform: translateY(-14px);
+    border-color: color-mix(in srgb, var(--block-face) 55%, #e6f4ff);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.26),
+      inset 0 -6px 14px rgba(1,7,20,0.18),
+      0 38px 34px rgba(0,0,0,0.55);
+  }
+
+  .stat-tile:hover::before,
+  .card:hover::before,
+  .stat-tile:hover::after,
+  .card:hover::after {
+    filter: drop-shadow(4px 10px 8px rgba(0,0,0,0.32));
+  }
+
+  /* Press: the block drops back onto the board. */
+  .stat-tile:active,
+  .card:active {
+    z-index: 6;
+    transform: translateY(2px);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.12),
+      inset 0 -6px 14px rgba(1,7,20,0.22),
+      0 6px 10px rgba(0,0,0,0.38);
+  }
+}
+
+/* Reduced motion: skip entrance animations only. Hover/press still move —
+   position feedback on direct interaction is expected, not decorative. */
+@media (prefers-reduced-motion: reduce) {
+  .stat-tile,
+  .card,
+  .evblock,
+  .datenav-today,
+  .typetoggle button.active,
+  .dashboard-signout,
+  .dashboard-back {
+    animation: none !important;
+  }
+}
+
+/* 3D environment behind the raised dashboard blocks. */
+.main-col {
+  background:
+    radial-gradient(ellipse at 16% 4%, rgba(27,105,100,0.14) 0%, transparent 38%),
+    radial-gradient(ellipse at 88% 76%, rgba(37,93,125,0.14) 0%, transparent 42%),
+    linear-gradient(145deg, #111f31 0%, #0b1626 52%, #08111e 100%);
+  box-shadow:
+    inset 16px 0 32px rgba(1,7,18,0.48),
+    inset 0 18px 35px rgba(1,7,18,0.4),
+    inset 0 -26px 50px rgba(0,0,0,0.34);
+}
+
+.board-wrap {
+  background-color: #0a1422;
+  background-image:
+    radial-gradient(ellipse at 42% -10%, rgba(40,93,125,0.18) 0%, transparent 50%),
+    radial-gradient(ellipse at 100% 62%, rgba(27,105,100,0.1) 0%, transparent 44%),
+    linear-gradient(155deg, rgba(15,31,50,0.98), rgba(6,15,27,0.99));
+  background-size:
+    100% 100%;
+  background-position: 0 0;
+  box-shadow:
+    inset 0 24px 38px rgba(1,8,20,0.5),
+    inset 22px 0 42px rgba(1,8,20,0.38),
+    inset -24px 0 46px rgba(2,12,27,0.44),
+    inset 0 -34px 55px rgba(0,0,0,0.36);
+}
+
+.topbar {
+  background:
+    linear-gradient(145deg, rgba(31,50,78,0.97), rgba(13,25,45,0.98));
+  border-bottom-color: rgba(79,129,173,0.3);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    inset 0 -5px 12px rgba(1,8,20,0.28),
+    0 6px 18px rgba(0,0,0,0.3);
+}
+
+/* Final reference match: floating header and dimensional grid stage. */
+.dashboard-topbar {
+  margin: 0 28px;
+  padding: 20px 34px 22px;
+  border: 1px solid #314761;
+  border-top: 0;
+  border-radius: 0 0 28px 28px;
+  background: linear-gradient(145deg, #1b2d49 0%, #101d32 58%, #0d182a 100%);
+  box-shadow:
+    inset 0 -1px 0 rgba(255,255,255,0.04),
+    inset 0 -9px 18px rgba(2,9,22,0.16),
+    0 12px 24px rgba(0,0,0,0.32);
+}
+
+.board-wrap {
+  padding: 28px 32px 44px;
+  background-color: #081421;
+  background-image:
+    linear-gradient(rgba(73,111,151,0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(73,111,151,0.1) 1px, transparent 1px),
+    radial-gradient(ellipse at 95% 42%, rgba(14,116,144,0.15) 0%, transparent 40%),
+    radial-gradient(ellipse at 44% -8%, rgba(34,77,118,0.17) 0%, transparent 48%),
+    linear-gradient(155deg, #0d1d30 0%, #071320 70%, #06101c 100%);
+  background-size: 64px 64px, 64px 64px, 100% 100%, 100% 100%, 100% 100%;
+  background-position: -1px -1px, -1px -1px, 0 0, 0 0, 0 0;
+}
+
+.stat-row {
+  gap: 30px;
+  margin: 0 2px 42px;
+}
+
+.controlbar {
+  min-height: 88px;
+  padding: 18px 26px;
+  margin: 0 12px 34px;
+  border-color: #3b4f69;
+  border-radius: 24px;
+  background: linear-gradient(145deg, #1c2a42 0%, #111d31 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.07),
+    0 4px 0 #2c3e5a,
+    0 9px 0 #1a2942,
+    0 16px 24px rgba(0,0,0,0.34);
+}
+
+.datenav {
+  border-color: rgba(45,212,191,0.35);
+  background: linear-gradient(145deg, #17263e, #0d192b);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.07),
+    0 3px 0 #173b51,
+    0 7px 12px rgba(0,0,0,0.32);
+}
+
+.cal-single,
+.cal-week,
+.cal-month {
+  margin: 0 12px;
+  border-color: #273a52;
+  border-radius: 24px;
+  background: linear-gradient(155deg, #0c1525 0%, #070e1a 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.04),
+    0 3px 0 #1d2c42,
+    0 8px 18px rgba(0,0,0,0.4);
+}
+
+.cal-lane {
+  padding: 26px 34px 38px;
+}
+
+@media (max-width: 768px) {
+  .dashboard-topbar {
+    margin: 0;
+    padding: 14px 16px;
+    border-radius: 0 0 18px 18px;
+  }
+
+  .board-wrap {
+    padding: 18px 14px 34px;
+    background-size: 44px 44px, 44px 44px, 100% 100%, 100% 100%, 100% 100%;
+  }
+
+  .stat-row {
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .controlbar,
+  .cal-single,
+  .cal-week,
+  .cal-month {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .controlbar {
+    min-height: auto;
+    padding: 12px;
+    border-radius: 16px;
+  }
+
+  .cal-lane {
+    padding: 18px 16px 28px;
+  }
+}
+
+/* Guaranteed 3D interaction. This final rule is deliberately unconditional:
+   some desktop browsers report a coarse/unknown pointer and skipped the
+   earlier capability-gated hover rule. */
+.stat-tile,
+.card {
+  transform: translate3d(0, 0, 0);
+  transition:
+    transform 0.24s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.24s ease,
+    border-color 0.24s ease !important;
+}
+
+.stat-tile::before,
+.card::before {
+  right: -22px;
+  bottom: -20px;
+  width: 22px;
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--block-edge) 82%, #91b6da),
+    color-mix(in srgb, var(--block-side) 88%, #000));
+  clip-path: polygon(0 0, 100% 13px, 100% 100%, 0 calc(100% - 20px));
+}
+
+.stat-tile::after,
+.card::after {
+  right: -22px;
+  bottom: -22px;
+  height: 22px;
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--block-edge) 92%, #30577f),
+    color-mix(in srgb, var(--block-side) 78%, #000));
+  clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 100%, 16px 100%);
+}
+
+.stat-tile:hover,
+.card:hover {
+  z-index: 20;
+  transform: translate3d(0, -18px, 0) !important;
+  border-color: color-mix(in srgb, var(--block-face) 46%, #ffffff) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.3),
+    inset 0 -6px 14px rgba(1,7,20,0.14),
+    0 42px 38px rgba(0,0,0,0.62) !important;
+}
+
+.stat-tile:hover::before,
+.card:hover::before,
+.stat-tile:hover::after,
+.card:hover::after {
+  filter: drop-shadow(5px 13px 9px rgba(0,0,0,0.38));
+}
+
+.stat-tile:active,
+.card:active {
+  transform: translate3d(0, -4px, 0) !important;
+}
+
+@media (max-width: 768px) {
+  .stat-tile::before,
+  .card::before {
+    right: -10px;
+    bottom: -10px;
+    width: 10px;
+  }
+
+  .stat-tile::after,
+  .card::after {
+    right: -10px;
+    bottom: -11px;
+    height: 11px;
+  }
+}
+
+/* Final environment palette: light, translucent, and behind all 3D rules. */
+body {
+  background:
+    radial-gradient(circle at 12% 12%, rgba(45,212,191,0.16), transparent 34%),
+    radial-gradient(circle at 88% 78%, rgba(56,189,248,0.16), transparent 38%),
+    linear-gradient(145deg, #132b42 0%, #102238 48%, #0b1c30 100%);
+}
+
+.main-col {
+  background:
+    radial-gradient(ellipse at 18% 5%, rgba(45,212,191,0.12) 0%, transparent 38%),
+    radial-gradient(ellipse at 86% 70%, rgba(56,189,248,0.12) 0%, transparent 42%),
+    linear-gradient(145deg, rgba(28,52,76,0.76), rgba(13,31,51,0.72));
+  box-shadow:
+    inset 10px 0 24px rgba(2,12,25,0.24),
+    inset 0 14px 28px rgba(2,12,25,0.2),
+    inset 0 -18px 38px rgba(0,0,0,0.2);
+}
+
+.board-wrap {
+  background-color: rgba(14,35,55,0.58);
+  background-image:
+    linear-gradient(rgba(123,169,207,0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(123,169,207,0.12) 1px, transparent 1px),
+    radial-gradient(ellipse at 95% 42%, rgba(45,212,191,0.11) 0%, transparent 40%),
+    radial-gradient(ellipse at 44% -8%, rgba(96,165,250,0.13) 0%, transparent 48%),
+    linear-gradient(155deg, rgba(23,48,72,0.68), rgba(8,24,41,0.72));
+  background-size: 64px 64px, 64px 64px, 100% 100%, 100% 100%, 100% 100%;
+  background-position: -1px -1px, -1px -1px, 0 0, 0 0, 0 0;
+  box-shadow:
+    inset 0 18px 30px rgba(2,12,25,0.22),
+    inset 14px 0 30px rgba(2,12,25,0.18),
+    inset -16px 0 32px rgba(2,12,25,0.2),
+    inset 0 -24px 38px rgba(0,0,0,0.18);
+}
+
+.dashboard-topbar {
+  background: linear-gradient(145deg, rgba(35,60,88,0.78), rgba(17,37,61,0.74));
+  backdrop-filter: blur(14px) saturate(120%);
+  border-color: rgba(111,158,197,0.34);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    inset 0 -6px 14px rgba(2,12,25,0.12),
+    0 10px 20px rgba(0,0,0,0.22);
+}
+
+.controlbar {
+  background: linear-gradient(145deg, rgba(36,56,82,0.76), rgba(17,35,57,0.72));
+  backdrop-filter: blur(12px) saturate(115%);
+  border-color: rgba(104,145,181,0.38);
+}
+
+.cal-single,
+.cal-week,
+.cal-month {
+  background: linear-gradient(155deg, rgba(20,36,57,0.76), rgba(8,21,37,0.78));
+  backdrop-filter: blur(10px);
+  border-color: rgba(76,112,148,0.34);
+}
+
+@media (max-width: 768px) {
+  .board-wrap {
+    background-size: 44px 44px, 44px 44px, 100% 100%, 100% 100%, 100% 100%;
+  }
+}
+
+/* One step brighter, retaining enough contrast for white text. */
+body {
+  background:
+    radial-gradient(circle at 12% 12%, rgba(69,230,207,0.2), transparent 35%),
+    radial-gradient(circle at 88% 78%, rgba(86,198,245,0.2), transparent 40%),
+    linear-gradient(145deg, #1a3852 0%, #163149 48%, #102840 100%);
+}
+
+.main-col {
+  background:
+    radial-gradient(ellipse at 18% 5%, rgba(65,205,190,0.15) 0%, transparent 40%),
+    radial-gradient(ellipse at 86% 70%, rgba(82,178,229,0.16) 0%, transparent 44%),
+    linear-gradient(145deg, rgba(43,75,103,0.72), rgba(23,52,77,0.7));
+}
+
+.board-wrap {
+  background-color: rgba(27,55,78,0.56);
+  background-image:
+    linear-gradient(rgba(151,194,226,0.14) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(151,194,226,0.14) 1px, transparent 1px),
+    radial-gradient(ellipse at 95% 42%, rgba(59,218,196,0.14) 0%, transparent 42%),
+    radial-gradient(ellipse at 44% -8%, rgba(119,181,247,0.16) 0%, transparent 50%),
+    linear-gradient(155deg, rgba(35,67,94,0.66), rgba(14,37,59,0.7));
+}
+
+.dashboard-topbar {
+  background: linear-gradient(145deg, rgba(49,80,110,0.8), rgba(27,57,84,0.77));
+  border-color: rgba(139,180,214,0.4);
+}
+
+.controlbar {
+  background: linear-gradient(145deg, rgba(48,76,105,0.8), rgba(27,55,82,0.76));
+  border-color: rgba(130,172,207,0.42);
+}
+
+.cal-single,
+.cal-week,
+.cal-month {
+  background: linear-gradient(155deg, rgba(33,59,86,0.8), rgba(17,42,66,0.8));
+  border-color: rgba(101,144,181,0.4);
+}
+
+/* Brighter box faces; side and bottom walls stay dark for readable 3D depth. */
+.stat-tile:nth-child(1) { --block-face: #477fd0; }
+.stat-tile:nth-child(2) { --block-face: #2b9877; }
+.stat-tile:nth-child(3) { --block-face: #b17b20; }
+
+.card.card-top-daily {
+  --block-face: #365e96;
+  border-color: #83adf1;
+}
+
+.card.card-top-weekly {
+  --block-face: #59458e;
+  border-color: #a489df;
+}
+
+.card.card-top-monthly {
+  --block-face: #775d31;
+  border-color: #d3a757;
+}
+
+.card.card-top-main {
+  --block-face: #2d7565;
+  border-color: #65c5aa;
+}
+
+.controlbar {
+  background: linear-gradient(145deg, rgba(62,91,121,0.84), rgba(39,68,97,0.82));
+  border-color: rgba(151,190,221,0.52);
+}
+
+.cal-single,
+.cal-week,
+.cal-month {
+  background: linear-gradient(155deg, rgba(48,79,110,0.86), rgba(29,58,87,0.84));
+  border-color: rgba(126,170,207,0.5);
+}
+
+.datenav {
+  background: linear-gradient(145deg, rgba(39,69,98,0.94), rgba(25,50,77,0.94));
+}
+
+/* Reference palette: near-black stage with translucent tinted 3D boxes. */
+body {
+  background:
+    radial-gradient(circle at 8% 14%, rgba(21,116,126,0.14), transparent 34%),
+    radial-gradient(circle at 92% 70%, rgba(24,77,128,0.13), transparent 38%),
+    #02060c;
+}
+
+.main-col {
+  background:
+    radial-gradient(ellipse at 12% 0%, rgba(18,107,113,0.12), transparent 38%),
+    radial-gradient(ellipse at 92% 62%, rgba(24,92,135,0.12), transparent 42%),
+    linear-gradient(145deg, rgba(4,13,23,0.95), rgba(1,6,13,0.97));
+  box-shadow: inset 0 18px 40px rgba(0,0,0,0.52);
+}
+
+.board-wrap {
+  background-color: rgba(2,8,15,0.9);
+  background-image:
+    linear-gradient(rgba(61,102,135,0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(61,102,135,0.1) 1px, transparent 1px),
+    radial-gradient(ellipse at 100% 45%, rgba(20,128,132,0.1) 0%, transparent 42%),
+    linear-gradient(155deg, rgba(5,18,29,0.92), rgba(1,7,14,0.96));
+  background-size: 64px 64px, 64px 64px, 100% 100%, 100% 100%;
+  background-position: -1px -1px, -1px -1px, 0 0, 0 0;
+  box-shadow:
+    inset 0 22px 34px rgba(0,0,0,0.52),
+    inset 16px 0 34px rgba(0,0,0,0.36),
+    inset -18px 0 36px rgba(0,0,0,0.4);
+}
+
+.dashboard-topbar {
+  background: linear-gradient(145deg, rgba(20,36,58,0.76), rgba(8,19,34,0.8));
+  backdrop-filter: blur(16px) saturate(115%);
+  border-color: rgba(80,122,158,0.34);
+}
+
+.stat-tile {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.13), transparent 44%),
+    linear-gradient(155deg,
+      color-mix(in srgb, var(--block-face) 68%, transparent),
+      color-mix(in srgb, var(--block-face) 36%, rgba(2,8,16,0.86)));
+  backdrop-filter: blur(14px) saturate(120%);
+}
+
+.card {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.08), transparent 40%),
+    linear-gradient(155deg,
+      color-mix(in srgb, var(--block-face) 34%, rgba(11,23,42,0.78)),
+      rgba(3,10,21,0.9));
+  backdrop-filter: blur(12px) saturate(110%);
+}
+
+.controlbar {
+  background: linear-gradient(145deg, rgba(25,40,62,0.72), rgba(9,20,35,0.78));
+  backdrop-filter: blur(14px) saturate(110%);
+  border-color: rgba(93,126,156,0.36);
+}
+
+.datenav {
+  background: linear-gradient(145deg, rgba(18,36,57,0.8), rgba(6,17,31,0.86));
+  backdrop-filter: blur(10px);
+}
+
+.cal-single,
+.cal-week,
+.cal-month {
+  background: linear-gradient(155deg, rgba(6,15,28,0.84), rgba(1,7,16,0.93));
+  backdrop-filter: blur(12px);
+  border-color: rgba(57,88,122,0.42);
+}
+
+@media (max-width: 768px) {
+  .board-wrap {
+    background-size: 44px 44px, 44px 44px, 100% 100%, 100% 100%;
+  }
+}
+
+/* Dark glass slabs: match the compact 3D proportions in the reference. */
+.stat-tile,
+.card {
+  --block-edge: color-mix(in srgb, var(--block-face) 58%, #04101d);
+  --block-side: color-mix(in srgb, var(--block-face) 32%, #010611);
+  border-width: 1px;
+  box-shadow:
+    inset 0 2px 0 color-mix(in srgb, var(--block-face) 24%, rgba(255,255,255,0.42)),
+    inset 0 -18px 28px rgba(0,4,12,0.22),
+    0 18px 28px rgba(0,0,0,0.34);
+}
+
+.stat-tile:nth-child(1) { --block-face: #256593; }
+.stat-tile:nth-child(2) { --block-face: #237762; }
+.stat-tile:nth-child(3) { --block-face: #846421; }
+
+.stat-tile {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.1), transparent 32%),
+    linear-gradient(155deg,
+      color-mix(in srgb, var(--block-face) 54%, rgba(8,24,38,0.72)),
+      color-mix(in srgb, var(--block-face) 24%, rgba(2,10,19,0.94)));
+  border-color: color-mix(in srgb, var(--block-face) 58%, rgba(197,226,239,0.7));
+  backdrop-filter: blur(16px) saturate(105%);
+}
+
+.card {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.055), transparent 30%),
+    linear-gradient(155deg,
+      color-mix(in srgb, var(--block-face) 18%, rgba(15,30,51,0.86)),
+      rgba(2,9,20,0.94));
+  border-color: color-mix(in srgb, var(--block-face) 60%, rgba(151,190,235,0.76));
+  backdrop-filter: blur(16px) saturate(105%);
+}
+
+.stat-tile::before {
+  right: -18px;
+  bottom: -16px;
+  width: 18px;
+  clip-path: polygon(0 0, 100% 11px, 100% 100%, 0 calc(100% - 16px));
+}
+
+.stat-tile::after {
+  right: -18px;
+  bottom: -18px;
+  height: 18px;
+  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 100%, 15px 100%);
+}
+
+.card::before {
+  right: -20px;
+  bottom: -18px;
+  width: 20px;
+  clip-path: polygon(0 0, 100% 12px, 100% 100%, 0 calc(100% - 18px));
+}
+
+.card::after {
+  right: -20px;
+  bottom: -20px;
+  height: 20px;
+  clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 100%, 16px 100%);
+}
+
+.stat-tile::before,
+.card::before {
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--block-edge) 88%, rgba(98,166,183,0.34)),
+    var(--block-side));
+}
+
+.stat-tile::after,
+.card::after {
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--block-edge) 84%, rgba(55,113,160,0.34)),
+    color-mix(in srgb, var(--block-side) 90%, #000));
+}
+
+/* Layered contact + ambient shadows make the slabs feel grounded, not muddy. */
+.stat-tile,
+.card {
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,0.16),
+    inset 1px 0 0 rgba(255,255,255,0.06),
+    inset 0 -14px 24px rgba(0,3,10,0.2),
+    0 7px 8px -5px rgba(0,0,0,0.78),
+    0 22px 34px -18px rgba(0,0,0,0.92),
+    7px 18px 28px -22px color-mix(in srgb, var(--block-face) 48%, transparent);
+}
+
+.stat-tile::before,
+.card::before {
+  filter:
+    drop-shadow(5px 5px 4px rgba(0,0,0,0.28))
+    drop-shadow(9px 12px 12px rgba(0,0,0,0.3));
+}
+
+.stat-tile::after,
+.card::after {
+  filter:
+    drop-shadow(0 5px 3px rgba(0,0,0,0.44))
+    drop-shadow(0 13px 11px rgba(0,0,0,0.34));
+}
+
+.stat-tile:hover,
+.card:hover {
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,0.2),
+    inset 1px 0 0 rgba(255,255,255,0.08),
+    inset 0 -14px 24px rgba(0,3,10,0.16),
+    0 12px 12px -8px rgba(0,0,0,0.78),
+    0 40px 48px -20px rgba(0,0,0,0.94),
+    10px 30px 38px -25px color-mix(in srgb, var(--block-face) 56%, transparent) !important;
+}
+
+.stat-tile:hover::before,
+.card:hover::before {
+  filter:
+    drop-shadow(7px 9px 6px rgba(0,0,0,0.34))
+    drop-shadow(12px 20px 15px rgba(0,0,0,0.4));
+}
+
+.stat-tile:hover::after,
+.card:hover::after {
+  filter:
+    drop-shadow(0 8px 5px rgba(0,0,0,0.46))
+    drop-shadow(0 22px 16px rgba(0,0,0,0.42));
+}
+
+/* Give every sidebar filter the same raised construction as the Tier 3 button. */
+.sidebar-nav {
+  gap: 8px;
+}
+
+.navitem {
+  --nav-color: #2b6474;
+  --nav-dark: color-mix(in srgb, var(--nav-color) 44%, #07101d);
+  position: relative;
+  border: 1px solid color-mix(in srgb, var(--nav-color) 54%, rgba(210,232,244,0.34));
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.09), transparent 44%),
+    linear-gradient(145deg,
+      color-mix(in srgb, var(--nav-color) 38%, #26384b),
+      color-mix(in srgb, var(--nav-color) 22%, #142234));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.18),
+    inset 0 -2px 5px rgba(0,4,13,0.3),
+    0 4px 0 var(--nav-dark),
+    0 9px 14px -6px rgba(0,0,0,0.62);
+  transform: translateY(-2px);
+  transition:
+    transform 0.16s var(--ease),
+    background 0.16s var(--ease),
+    border-color 0.16s var(--ease),
+    box-shadow 0.16s var(--ease);
+}
+
+/* Every filter button gets its OWN color, spread across the full wheel and
+   validated in sidebar order for colorblind separation:
+   teal / blue / gold / lime / magenta / sky / purple / orange / green. */
+.navitem.col-all      { --nav-color: #16a394; }
+.navitem.col-tier1    { --nav-color: #2563eb; }
+.navitem.col-tier2    { --nav-color: #a16207; }
+.navitem.col-tier3    { --nav-color: #65a30d; }
+.navitem.col-alltypes { --nav-color: #c026d3; }
+.navitem.col-daily    { --nav-color: #0a9ede; }
+.navitem.col-weekly   { --nav-color: #7c3aed; }
+.navitem.col-monthly  { --nav-color: #d97706; }
+.navitem.col-main     { --nav-color: #059669; }
+
+.navitem:hover,
+.navitem.col-tier3.active:hover {
+  border-color: color-mix(in srgb, var(--nav-color) 64%, rgba(235,247,255,0.5));
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.12), transparent 44%),
+    linear-gradient(145deg,
+      color-mix(in srgb, var(--nav-color) 48%, #2b4055),
+      color-mix(in srgb, var(--nav-color) 30%, #142234));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.22),
+    inset 0 -2px 5px rgba(0,4,13,0.26),
+    0 5px 0 var(--nav-dark),
+    0 12px 17px -7px rgba(0,0,0,0.68);
+  transform: translateY(-3px);
+}
+
+.navitem.active,
+.navitem.col-tier3.active {
+  border-color: color-mix(in srgb, var(--nav-color) 64%, rgba(255,255,255,0.58));
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.18), transparent 42%),
+    linear-gradient(145deg,
+      color-mix(in srgb, var(--nav-color) 86%, #9bb2c7),
+      color-mix(in srgb, var(--nav-color) 78%, #10192b));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.3),
+    inset 0 -3px 7px rgba(0,4,13,0.34),
+    0 5px 0 var(--nav-dark),
+    0 11px 18px -6px color-mix(in srgb, var(--nav-color) 48%, rgba(0,0,0,0.64));
+  transform: translateY(-3px);
+}
+
+.navitem:active,
+.navitem.active:active,
+.navitem.col-tier3.active:active {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.06), transparent 42%),
+    linear-gradient(145deg,
+      color-mix(in srgb, var(--nav-color) 55%, #1b2a3c),
+      color-mix(in srgb, var(--nav-color) 38%, #101929));
+  box-shadow:
+    inset 0 3px 7px rgba(0,3,12,0.5),
+    0 1px 0 var(--nav-dark),
+    0 4px 8px -4px rgba(0,0,0,0.5);
+  transform: translateY(1px);
+}
+
+.navitem .navitem-dot {
+  width: 11px;
+  height: 11px;
+  background: radial-gradient(circle at 32% 26%,
+    color-mix(in srgb, var(--nav-color) 34%, #fff) 0 18%,
+    var(--nav-color) 42%,
+    color-mix(in srgb, var(--nav-color) 58%, #020610) 100%);
+  box-shadow:
+    inset 1px 1px 2px rgba(255,255,255,0.5),
+    inset -1px -2px 2px rgba(0,0,0,0.42),
+    0 3px 6px color-mix(in srgb, var(--nav-color) 44%, transparent);
+}
+
+.navitem .navitem-label {
+  color: rgba(239,247,252,0.86);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+.navitem.active .navitem-count,
+.navitem.col-tier3.active .navitem-count {
+  border: 1px solid rgba(255,255,255,0.18);
+  background: linear-gradient(145deg, rgba(255,255,255,0.24), rgba(0,5,15,0.24));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.18),
+    0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Selection behavior: filters become raised 3D buttons only after selection. */
+.navitem:not(.active) {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+  transform: none;
+}
+
+.navitem:not(.active):hover {
+  border-color: color-mix(in srgb, var(--nav-color) 28%, transparent);
+  background: color-mix(in srgb, var(--nav-color) 11%, rgba(255,255,255,0.035));
+  box-shadow: none;
+  transform: translateX(2px);
+}
+
+.navitem:not(.active):active {
+  border-color: color-mix(in srgb, var(--nav-color) 36%, transparent);
+  background: color-mix(in srgb, var(--nav-color) 17%, rgba(255,255,255,0.04));
+  box-shadow: inset 0 2px 5px rgba(0,0,0,0.22);
+  transform: scale(0.985);
+}
+
+.navitem:not(.active) .navitem-dot {
+  width: 9px;
+  height: 9px;
+  background: var(--nav-color);
+  box-shadow: none;
+}
+
+.navitem.active,
+.navitem.col-tier3.active {
+  transform: translateY(-3px);
+}
+
+.navitem.active:hover,
+.navitem.col-tier3.active:hover {
+  border-color: color-mix(in srgb, var(--nav-color) 72%, rgba(255,255,255,0.62));
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.21), transparent 42%),
+    linear-gradient(145deg,
+      color-mix(in srgb, var(--nav-color) 92%, #abc0d3),
+      color-mix(in srgb, var(--nav-color) 82%, #10192b));
+  transform: translateY(-4px);
 }

@@ -29,12 +29,22 @@ export async function renderReport(reportData, options = {}) {
   const safeJson = toSafeJson([{ report_data: normalized }])
   const title = metaTitle(normalized)
 
+  // The template carries its own EN/TH chrome and boots in the language
+  // getLangPref() returns. The iframe is sandboxed (opaque origin), so
+  // localStorage always throws and the fallback literal decides the language —
+  // rewrite both fallbacks so the viewer's tab choice picks the boot language.
+  const lang = options.language === 'thai' ? 'th' : 'en'
+
   return competitorTemplate
     .replace(/(<script id="report-data" type="application\/json">)[\s\S]*?(<\/script>)/i,
       (_match, open, close) => `${open}\n${safeJson}\n${close}`)
     .replace(/(<script id="report-data-th" type="application\/json">)[\s\S]*?(<\/script>)/i,
       (_match, open, close) => `${open}\n${safeJson}\n${close}`)
     .replace(/<title>[\s\S]*?<\/title>/i, `<title>${title}</title>`)
+    .replace(
+      "function getLangPref(){ try{ return localStorage.getItem('dc-lang')||'en'; }catch(e){ return 'en'; } }",
+      `function getLangPref(){ try{ return localStorage.getItem('dc-lang')||'${lang}'; }catch(e){ return '${lang}'; } }`
+    )
 }
 
 // Configure gold-dashboard-v11.html with its own read-only Supabase project.

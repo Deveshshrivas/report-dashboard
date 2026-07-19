@@ -14,7 +14,7 @@ import {
 import './index.css'
 
 const TYPES = [
-  { key: '', label: 'All Types', colorClass: 'col-all' },
+  { key: '', label: 'All Types', colorClass: 'col-alltypes' },
   { key: 'daily', label: 'Daily', colorClass: 'col-daily' },
   { key: 'weekly', label: 'Weekly', colorClass: 'col-weekly' },
   { key: 'monthly', label: 'Monthly', colorClass: 'col-monthly' },
