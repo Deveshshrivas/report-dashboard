@@ -36,7 +36,7 @@ const VIEWS = [
 
 const PORTALS = {
   compi: {
-    source: 'reports', title: 'Compi Dashboard', short: 'Compi',
+    source: 'reports', title: 'Clinic Report', short: 'Clinic',
     description: 'Tier-based competitor intelligence reports', icon: 'C', theme: 'compi',
   },
   gold: {
@@ -54,33 +54,83 @@ const PORTALS = {
 }
 
 function LoginPage() {
+  const [mode, setMode] = useState('signin')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
+  const isSignUp = mode === 'signup'
+
+  function changeMode(nextMode) {
+    setMode(nextMode)
+    setPassword('')
+    setConfirmPassword('')
+    setError('')
+  }
+
   async function submit(event) {
     event.preventDefault()
+    if (isSignUp && password !== confirmPassword) {
+      setError('Passwords do not match.')
+      return
+    }
+
     setLoading(true)
     setError('')
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) setError(error.message)
+
+    if (isSignUp) {
+      const { error: signUpError } = await supabase.functions.invoke('direct-signup', {
+        body: { email, password },
+      })
+      if (signUpError) {
+        let signUpMessage = 'Unable to create account.'
+        try {
+          const response = await signUpError.context?.json()
+          if (response?.error) signUpMessage = response.error
+        } catch {
+          // Retain the safe fallback for malformed or unavailable responses.
+        }
+        setError(signUpMessage)
+      } else {
+        const { error: signInError } = await supabase.auth.signInWithPassword({ email, password })
+        if (signInError) setError(signInError.message)
+      }
+    } else {
+      const { error: signInError } = await supabase.auth.signInWithPassword({ email, password })
+      if (signInError) setError(signInError.message)
+    }
+
     setLoading(false)
   }
 
   return (
     <main className="auth-page">
       <section className="auth-panel">
-        <div className="auth-mark">R</div>
+        <div className="auth-mark">C</div>
         <p className="auth-eyebrow">Report Intelligence</p>
-        <h1>Welcome back</h1>
-        <p className="auth-copy">Sign in to access the Compi, Gold, and Resort dashboards.</p>
+        <h1>{isSignUp ? 'Create account' : 'Welcome back'}</h1>
+        <p className="auth-copy">
+          {isSignUp ? 'Sign up to access the Clinic Report dashboard.' : 'Sign in to access the Clinic Report dashboard.'}
+        </p>
         <form onSubmit={submit} className="auth-form">
           <label>Email<input type="email" value={email} onChange={e => setEmail(e.target.value)} autoComplete="email" required /></label>
-          <label>Password<input type="password" value={password} onChange={e => setPassword(e.target.value)} autoComplete="current-password" required /></label>
+          <label>Password<input type="password" value={password} onChange={e => setPassword(e.target.value)} autoComplete={isSignUp ? 'new-password' : 'current-password'} minLength={6} required /></label>
+          {isSignUp && (
+            <label>Confirm password<input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} autoComplete="new-password" minLength={6} required /></label>
+          )}
           {error && <div className="auth-error">{error}</div>}
-          <button type="submit" disabled={loading}>{loading ? 'Signing in…' : 'Sign in'}</button>
+          <button className="auth-submit" type="submit" disabled={loading}>
+            {loading ? (isSignUp ? 'Creating account…' : 'Signing in…') : (isSignUp ? 'Create account' : 'Sign in')}
+          </button>
         </form>
+        <p className="auth-switch">
+          {isSignUp ? 'Already have an account?' : "Don't have an account?"}
+          <button type="button" onClick={() => changeMode(isSignUp ? 'signin' : 'signup')}>
+            {isSignUp ? 'Sign in' : 'Sign up'}
+          </button>
+        </p>
       </section>
     </main>
   )
